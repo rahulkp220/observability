@@ -35,3 +35,11 @@ variable "outcidr_blocks" {
 }
 
 variable "vpc_id" {}
+
+variable "machine_count" {
+  default = 1
+}
+
+variable "has_public_ip" {
+  default = true
+}

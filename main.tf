@@ -89,12 +89,12 @@ resource "aws_security_group" "machine_sg" {
 }
 
 resource "aws_instance" "machine" {
-  count                       = 1
+  count                       = "${var.machine_count}"
   ami                         = "${var.aws_ami}"
   instance_type               = "${var.aws_instance_type}"
   vpc_security_group_ids      = ["${aws_security_group.machine_sg.id}"]
   key_name                    = "${var.key_name}"
-  associate_public_ip_address = true
+  associate_public_ip_address = "${var.has_public_ip}"
 
   tags {
     Name = "machine"
