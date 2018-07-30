@@ -29,7 +29,6 @@ resource "aws_instance" "machine" {
       "cat ~/.ssh/authorized_keys | tail -1 >> ~/.ssh/id_rsa.pub",
       "git clone https://github.com/mStakx/observability-boilerplate1.git",
       "cd observability-boilerplate1",
-      "sed -i \"1icython\" requirements.txt",
       "sudo sysctl -w vm.max_map_count=262144",
       "sudo ./setup.sh",
     ]
