@@ -1,6 +1,7 @@
-resource "aws_security_group" "machine_sg" {
-  name   = "machine_sg"
+resource "aws_security_group" "prometheus_sg" {
+  name   = "prometheus_sg"
   vpc_id = "${var.vpc_id}"
+  count = "${var.prometheus_count > 0 ? 1 : 0}"
 
   ingress {
     from_port   = 22
@@ -11,51 +12,61 @@ resource "aws_security_group" "machine_sg" {
   }
 
   ingress {
-    from_port   = 8080
-    to_port     = 8080
-    protocol    = "tcp"
-    cidr_blocks = "${var.cidr_blocks}"
-    description = "Nginx"
-  }
-
-  ingress {
-    from_port   = 8000
-    to_port     = 8000
-    protocol    = "tcp"
-    cidr_blocks = "${var.cidr_blocks}"
-    description = "Django"
-  }
-
-  ingress {
-    from_port   = 8050
-    to_port     = 8050
-    protocol    = "tcp"
-    cidr_blocks = "${var.cidr_blocks}"
-    description = "Logstash"
-  }
-
-  ingress {
-    from_port   = 8020
-    to_port     = 8020
-    protocol    = "tcp"
-    cidr_blocks = "${var.cidr_blocks}"
-    description = "Elasticsearch"
-  }
-
-  ingress {
-    from_port   = 8056
-    to_port     = 8056
-    protocol    = "tcp"
-    cidr_blocks = "${var.cidr_blocks}"
-    description = "Kibana"
-  }
-
-  ingress {
     from_port   = 9090
     to_port     = 9090
     protocol    = "tcp"
     cidr_blocks = "${var.cidr_blocks}"
     description = "Prometheus"
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = "${var.outcidr_blocks}"
+  }
+}
+
+resource "aws_security_group" "alertmanager_sg" {
+  name   = "alertmanager_sg"
+  vpc_id = "${var.vpc_id}"
+  count = "${var.alertmanager_count > 0 ? 1 : 0}"
+
+  ingress {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = "${var.cidr_blocks}"
+    description = "SSH"
+  }
+
+  ingress {
+    from_port   = 9093
+    to_port     = 9093
+    protocol    = "tcp"
+    cidr_blocks = "${var.cidr_blocks}"
+    description = "Alertmanager"
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = "${var.outcidr_blocks}"
+  }
+}
+
+resource "aws_security_group" "grafana_sg" {
+  name   = "grafana_sg"
+  vpc_id = "${var.vpc_id}"
+  count = "${var.grafana_count > 0 ? 1 : 0}"
+
+  ingress {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = "${var.cidr_blocks}"
+    description = "SSH"
   }
 
   ingress {
@@ -66,12 +77,33 @@ resource "aws_security_group" "machine_sg" {
     description = "Grafana"
   }
 
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = "${var.outcidr_blocks}"
+  }
+}
+
+resource "aws_security_group" "pushgateway_sg" {
+  name   = "pushgateway_sg"
+  vpc_id = "${var.vpc_id}"
+  count = "${var.pushgateway_count > 0 ? 1 : 0}"
+
   ingress {
-    from_port   = 9411
-    to_port     = 9411
+    from_port   = 22
+    to_port     = 22
     protocol    = "tcp"
     cidr_blocks = "${var.cidr_blocks}"
-    description = "Zipkin"
+    description = "SSH"
+  }
+
+  ingress {
+    from_port   = 9091
+    to_port     = 9091
+    protocol    = "tcp"
+    cidr_blocks = "${var.cidr_blocks}"
+    description = "PushGateway"
   }
 
   egress {

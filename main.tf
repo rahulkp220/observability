@@ -1,13 +1,13 @@
-resource "aws_instance" "machine" {
-  count                       = "${var.machine_count}"
+resource "aws_instance" "prometheus" {
+  count                       = "${var.prometheus_count}"
   ami                         = "${var.aws_ami}"
   instance_type               = "${var.aws_instance_type}"
-  vpc_security_group_ids      = ["${aws_security_group.machine_sg.id}"]
+  vpc_security_group_ids      = ["${aws_security_group.prometheus_sg.id}"]
   key_name                    = "${var.key_name}"
   associate_public_ip_address = "${var.has_public_ip}"
 
   tags {
-    Name = "machine"
+    Name = "prometheus-${format("%d", count.index+1)}"
   }
 
   connection {
@@ -15,22 +15,136 @@ resource "aws_instance" "machine" {
     private_key = "${file(var.private_ssh_key)}"
   }
 
+  provisioner "file" {
+    source      = "../scripts/prometheus.sh"
+    destination = "/tmp/prometheus.sh"
+  }
+
+
+  provisioner "file" {
+    source      = "../scripts/node_exporter.sh"
+    destination = "/tmp/node_exporter.sh"
+  }
+
   provisioner "remote-exec" {
     inline = [
       "sudo apt-get update",
       "sudo apt-get install -y apt-transport-https ca-certificates curl software-properties-common",
-      "curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -",
-      "sudo add-apt-repository \"deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable \"",
-      "sudo apt-get update",
-      "sudo apt-get install -y docker-ce python3-pip",
-      "sudo service docker start",
-      "sudo curl -L https://github.com/docker/compose/releases/download/1.22.0/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose",
-      "sudo chmod +x /usr/local/bin/docker-compose",
-      "cat ~/.ssh/authorized_keys | tail -1 >> ~/.ssh/id_rsa.pub",
-      "git clone https://github.com/mStakx/observability-boilerplate1.git",
-      "cd observability-boilerplate1",
-      "sudo sysctl -w vm.max_map_count=262144",
-      "sudo ./setup.sh",
+      "chmod +x /tmp/prometheus.sh",
+      "sudo sh /tmp/prometheus.sh",
+      "chmod +x /tmp/node_exporter.sh",
+      "sudo sh /tmp/node_exporter.sh"
     ]
   }
 }
+
+resource "aws_instance" "alertmanager" {
+  count                       = "${var.alertmanager_count}"
+  ami                         = "${var.aws_ami}"
+  instance_type               = "${var.aws_instance_type}"
+  vpc_security_group_ids      = ["${aws_security_group.alertmanager_sg.id}"]
+  key_name                    = "${var.key_name}"
+  associate_public_ip_address = "${var.has_public_ip}"
+
+  tags {
+    Name = "alertmanager-${format("%d", count.index+1)}"
+  }
+
+  connection {
+    user        = "${var.user}"
+    private_key = "${file(var.private_ssh_key)}"
+  }
+
+  provisioner "file" {
+    source      = "../scripts/alertmanager.sh"
+    destination = "/tmp/alertmanager.sh"
+  }
+
+  provisioner "file" {
+    source      = "../scripts/node_exporter.sh"
+    destination = "/tmp/node_exporter.sh"
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "sudo apt-get update",
+      "sudo apt-get install -y apt-transport-https ca-certificates curl software-properties-common",
+      "chmod +x /tmp/alertmanager.sh",
+      "sudo sh /tmp/alertmanager.sh",,
+      "chmod +x /tmp/node_exporter.sh",
+      "sudo sh /tmp/node_exporter.sh"
+    ]
+  }
+}
+
+resource "aws_instance" "grafana" {
+  count                       = "${var.grafana_count}"
+  ami                         = "${var.aws_ami}"
+  instance_type               = "${var.aws_instance_type}"
+  vpc_security_group_ids      = ["${aws_security_group.grafana_sg.id}"]
+  key_name                    = "${var.key_name}"
+  associate_public_ip_address = "${var.has_public_ip}"
+
+  tags {
+    Name = "grafana-${format("%d", count.index+1)}"
+  }
+
+  connection {
+    user        = "${var.user}"
+    private_key = "${file(var.private_ssh_key)}"
+  }
+
+  provisioner "file" {
+    source      = "../scripts/grafana.sh"
+    destination = "/tmp/grafana.sh"
+  }
+
+  provisioner "file" {
+    source      = "../scripts/node_exporter.sh"
+    destination = "/tmp/node_exporter.sh"
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "sudo apt-get update",
+      "sudo apt-get install -y apt-transport-https ca-certificates curl software-properties-common",
+      "chmod +x /tmp/grafana.sh",
+      "sudo sh /tmp/grafana.sh",,
+      "chmod +x /tmp/node_exporter.sh",
+      "sudo sh /tmp/node_exporter.sh"
+    ]
+  }
+}
+
+resource "aws_instance" "pushgateway" {
+  count                       = "${var.pushgateway_count}"
+  ami                         = "${var.aws_ami}"
+  instance_type               = "${var.aws_instance_type}"
+  vpc_security_group_ids      = ["${aws_security_group.pushgateway_sg.id}"]
+  key_name                    = "${var.key_name}"
+  associate_public_ip_address = "${var.has_public_ip}"
+
+  tags {
+    Name = "pushGateway-${format("%d", count.index+1)}"
+  }
+
+  connection {
+    user        = "${var.user}"
+    private_key = "${file(var.private_ssh_key)}"
+  }
+
+  provisioner "file" {
+    source      = "../scripts/node_exporter.sh"
+    destination = "/tmp/node_exporter.sh"
+  }
+  provisioner "remote-exec" {
+    inline = [
+      "sudo apt-get update",
+      "sudo apt-get install -y apt-transport-https ca-certificates curl software-properties-common",
+      "sudo apt-get install -y prometheus-pushgateway",,
+      "chmod +x /tmp/node_exporter.sh",
+      "sudo sh /tmp/node_exporter.sh"
+    ]
+  }
+}
+
