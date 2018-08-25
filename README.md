@@ -66,4 +66,4 @@ ssh -i your_key.pem ubuntu@public_ip_here
 ```
 
 ## Note:
-The scripts used in the project are written by https://github.com/in4it/prometheus-course. :+1:
+The scripts used in the project are written by [in4it Team](https://github.com/in4it/prometheus-course) :+1:
