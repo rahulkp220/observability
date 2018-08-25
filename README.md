@@ -16,30 +16,30 @@ aws_secret_access_key = "your_secret_access_key"
 ## Module Information
 ```
 module "observability" {
-    source = "../"
-    profile = "your_profile_here" ,
+    source              = "../"
+    profile             = "your_profile_here" ,
     aws_credential_path = "~/.aws/credentials",
-    aws_region = "your_aws_region", # example: us-east-2
-    aws_ami = "your_aws_ami_here" , # example: ami-5e8bb23b
-    prometheus_count = 1 ,
-    alertmanager_count = 1 ,
-    grafana_count = 1 ,
-    pushgateway_count = 1 ,
-    aws_instance_type = "aws_instance_type_here" , # example: t2.micro
-    key_name = "your_key_pair_here" , 
-    user = "ubuntu" ,
-    private_ssh_key = "ssh_key_path" ,
-    cidr_blocks = ["cider_range_here"] , # example: "0.0.0.0/0"
-    outcidr_blocks = ["cider_range_here"] , # example: "0.0.0.0/0"
-    vpc_id = "your_vpc_id_here" , # example: vpc-3993a751"
-    has_public_ip = true
+    aws_region          = "your_aws_region", # example: us-east-2
+    aws_ami             = "your_aws_ami_here" , # example: ami-5e8bb23b
+    prometheus_count    = 1 ,
+    alertmanager_count  = 1 ,
+    grafana_count       = 1 ,
+    pushgateway_count   = 1 ,
+    aws_instance_type   = "aws_instance_type_here" , # example: t2.micro
+    key_name            = "your_key_pair_here" , 
+    user                = "ubuntu" ,
+    private_ssh_key     = "ssh_key_path" ,
+    cidr_blocks         = ["cider_range_here"] , # example: "0.0.0.0/0"
+    outcidr_blocks      = ["cider_range_here"] , # example: "0.0.0.0/0"
+    vpc_id              = "your_vpc_id_here" ,  # example: vpc-3993a751"
+    has_public_ip       = true
 }
 ```
-* Fill in all these values
-* cd into the `example` directory and run,
-** `terraform init`
-** `terraform plan`
-** `terraform apply --auto-approve`
+* Fill in all these values and then change to the `example` directory
+* Run the following terraform commands to see the magic,
+    * `terraform init`
+    * `terraform plan`
+    * `terraform apply --auto-approve`
 
 * Make sure you have a `VPC` created and also a `KeyPair` generated which will be used to login into the machine. The command 
 would be like 
