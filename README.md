@@ -1,8 +1,8 @@
-# Observability
+# Observability :rocket:
 A terraform based observability boilerplate that can run on AWS.
 Creates a complete setup for Prometheus, Grafana, Alertmanager and Pushgateway. 
 
-## Before you run
+## Before you run :running:
 * Make sure you have `terraform` installed on your system
 * Make sure you have AWS credentials somewhere, the default location being `~/.aws/credentials`, and have a profile created like
 
@@ -13,7 +13,7 @@ aws_secret_access_key = "your_secret_access_key"
 
 ```
 
-## Module Information
+## Module Information :information_source:
 ```
 module "observability" {
     source              = "../"
@@ -64,3 +64,6 @@ pushgateway = [
 ```
 ssh -i your_key.pem ubuntu@public_ip_here
 ```
+
+## Note:
+The scripts used in the project are written by https://github.com/in4it/prometheus-course. :+1:
