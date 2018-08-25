@@ -35,14 +35,32 @@ module "observability" {
     has_public_ip       = true
 }
 ```
-* Fill in all these values and then change to the `example` directory
+* Change to the `example` directory and fill in the all the values.
+* Make sure you have a `VPC` created and also a `KeyPair` generated.
 * Run the following terraform commands to see the magic,
     * `terraform init`
     * `terraform plan`
     * `terraform apply --auto-approve`
+    
+## Sample output
+```
+Outputs:
 
-* Make sure you have a `VPC` created and also a `KeyPair` generated which will be used to login into the machine. The command 
-would be like 
+alertmanager = [
+    18.191.34.26
+]
+grafana = [
+    18.188.149.197
+]
+prometheus = [
+    52.14.154.54
+]
+pushgateway = [
+    18.191.173.29
+]
+```
+
+## Logging in to the target machines 
 ```
 ssh -i your_key.pem ubuntu@public_ip_here
 ```
