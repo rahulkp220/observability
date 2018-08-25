@@ -59,11 +59,11 @@ pushgateway = [
     18.191.173.29
 ]
 ```
-
-## Logging in to the target machines 
-```
-ssh -i your_key.pem ubuntu@public_ip_here
-```
+## Ports to play :eyes:
+* Alertmanager IP on port `9093`
+* Grafana IP on port `3000`
+* Prometheus IP on port `9090`
+* Pushgateway IP on port `9091`
 
 ## Note:
 The scripts used in the project are written by [in4it Team](https://github.com/in4it/prometheus-course) :+1:
